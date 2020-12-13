@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="row">
+            <h4>Generate Students</h4>
+        </div>
+        <div class="row">
+            <form action="{{ url_for('api.populate') }}" method="POST">
+                {{ student_form.hidden_tag() }}
+                <div class="form-group">
+                    <p>Number of Students</p>
+                    {{ student_form.number(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Cohort ID</p>
+                    {{ student_form.cohort(class="form-control")}}
+                </div>
+                {{ student_form.student_submit(class="btn btn-info btn-block") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <h4>Create Instructor</h4>
+        </div>
+        <div class="row">
+            <form action="{{ url_for('api.populate') }}" method="POST">
+                {{ instructor_form.hidden_tag() }}
+                <div class="form-group">
+                    <p>First Name</p>
+                    {{ instructor_form.first_name(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Last Name</p>
+                    {{ instructor_form.last_name(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Instructor Quality</p>
+                    {{ instructor_form.quality(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Instructor Commitment</p>
+                    {{ instructor_form.commitment(class="form-control")}}
+                </div>
+                {{ instructor_form.instructor_submit(class="btn btn-info btn-block") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <h4>Create Cohort</h4>
+        </div>
+        <div class="row">
+            <form action="{{ url_for('api.populate') }}" method="POST">
+                {{ cohort_form.hidden_tag() }}
+                <div class="form-group">
+                    <p>Cohort Curriculum</p>
+                    {{ cohort_form.curriculum(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Cohort Instructor</p>
+                    {{ cohort_form.instructor(class="form-control")}}
+                </div>
+                {{ cohort_form.cohort_submit(class="btn btn-info btn-block") }}
+            </form>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <h4>Create Curriculum</h4>
+        </div>
+        <div class="row">
+            <form action="{{ url_for('api.populate') }}" method="POST">
+                {{ curriculum_form.hidden_tag() }}
+                <div class="form-group">
+                    <p>Curriculum Name</p>
+                    {{ curriculum_form.name(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Curriculum Time to Complete (Minutes)</p>
+                    {{ curriculum_form.time_to_complete(class="form-control")}}
+                </div>
+                {{ curriculum_form.curriculum_submit(class="btn btn-info btn-block") }}
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="row">
+            <h4>Create Topic</h4>
+        </div>
+        <div class="row">
+            <form action="{{ url_for('api.populate') }}" method="POST">
+                {{ topic_form.hidden_tag() }}
+                <div class="form-group">
+                    <p>Topic Name</p>
+                    {{ topic_form.name(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Topic Difficulty</p>
+                    {{ topic_form.difficulty(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Topic Understanding Required</p>
+                    {{ topic_form.prerequisite(class="form-control")}}
+                </div>
+                <div class="form-group">
+                    <p>Topic Time to Cover</p>
+                    {{ topic_form.time_to_cover(class="form-control")}}
+                </div>
+                {{ topic_form.topic_submit(class="btn btn-info btn-block") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
