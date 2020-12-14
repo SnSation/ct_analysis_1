@@ -25,12 +25,13 @@ def populate():
     #             'commitment':random.randint(0, 10),
     #             'background':background,
     #             'understanding':background,
-    #             'cohort':create_student.cohort.data
+    #             'cohort_id':create_student.cohort.data
     #         }
     #         loops -= 1
     #         new_student.set_attributes(student_data)
     #         new_student.save_item()
     #         print(new_student)
+
     create_instructor = CreateInstructor()
     # if create_instructor.validate_on_submit:
     #     new_instructor = Instructor()
@@ -42,6 +43,7 @@ def populate():
     #     }
     #     new_instructor.set_attributes(instructor_data)
     #     new_instructor.save_item()
+
     create_cohort = CreateCohort()
     # if create_cohort.validate_on_submit:
     #     new_cohort = Cohort()
@@ -61,17 +63,18 @@ def populate():
     #     }
     #     new_curriculum.set_attributes(curriculum_data)
     #     new_curriculum.save_item()
+
     create_topic = CreateTopic()
-    if create_topic.validate_on_submit:
-        new_topic = Topic()
-        topic_data = {
-            'name':create_topic.name.data,
-            'difficulty':create_topic.difficulty.data,
-            'prerequisite':create_topic.prerequisite.data,
-            'time_to_cover':create_topic.time_to_cover.data,
-        }
-        new_topic.set_attributes(topic_data)
-        new_topic.save_item()
+    # if create_topic.validate_on_submit:
+    #     new_topic = Topic()
+    #     topic_data = {
+    #         'name':create_topic.name.data,
+    #         'difficulty':create_topic.difficulty.data,
+    #         'prerequisite':create_topic.prerequisite.data,
+    #         'time_to_cover':create_topic.time_to_cover.data,
+    #     }
+    #     new_topic.set_attributes(topic_data)
+    #     new_topic.save_item()
     create_event = CreateEvent()
     context = {
         'student_form': create_student,
@@ -82,3 +85,34 @@ def populate():
         'event_form':create_event
     }
     return render_template('api/populate.html', **context)
+
+@api.route('/students', methods=['GET'])
+def students():
+    students = [student.attributes_as_dictionary() for student in Student.query.all()]
+    for student in students:
+        student['cohort_id']={'cohort_name':student['cohort_id'].name,'cohort_id':student['cohort_id'].id}
+    return jsonify(students)
+
+@api.route('/cohorts', methods=['GET'])
+def cohorts():
+    cohorts = [cohort.attributes_as_dictionary() for cohort in Cohort.query.all()]
+    for cohort in cohorts:
+         cohort['students']=[{'name':f'{student.first_name} {student.last_name}', 'id':student.id} for student in cohort['students']]
+    return jsonify(cohorts)
+
+@api.route('/instructors', methods=['GET'])
+def instructors():
+    instructors = [instructor.attributes_as_dictionary() for instructor in Instructor.query.all()]
+    return jsonify(instructors)
+
+@api.route('/curriculums', methods=['GET'])
+def curriculums():
+    curriculums = [curriculum.attributes_as_dictionary() for curriculum in Curriculum.query.all()]
+    for curriculum in curriculums:
+        curriculum['topics']=[{'name':topic.name, 'id':topic.id} for topic in curriculum['topics']]
+    return jsonify(curriculums)
+
+@api.route('/topics', methods=['GET'])
+def topics():
+    topics = [topic.attributes_as_dictionary() for topic in Topic.query.all()]
+    return jsonify(topics)

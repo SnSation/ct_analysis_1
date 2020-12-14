@@ -12,7 +12,7 @@ class Student(db.Model):
     commitment = db.Column(db.Integer) # Time spent gaining understanding outside of class
     background = db.Column(db.Integer) # Understanding start value
     understanding = db.Column(db.Float) # Measure of course learned
-    cohort = db.Column(db.Integer) # Foreign Key to Cohort.id
+    cohort_id = db.Column(db.Integer, db.ForeignKey('cohort.id')) # Foreign Key to Cohort.id
 
     def __repr__(self):
         return f'< Student | Name: {self.first_name} {self.last_name} | ID: {self.id} >'
@@ -31,7 +31,7 @@ class Student(db.Model):
             'commitment':self.commitment,
             'background':self.background,
             'understanding':self.understanding,
-            'cohort':self.cohort
+            'cohort_id':self.cohort
         }
         return dictionary
 
@@ -84,22 +84,23 @@ class Instructor(db.Model):
 
 class Cohort(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    curriculum = db.Column(db.Integer) # Foreign Key to Curriculum.id
-    instructor = db.Column(db.Integer) # Foreign Key to Instructor.id
-    # student_id = db.Column(db.Integer) # Foreign Key to Student.id
-    # students = db.relationship("Student", backref="cohort") # One to Many: Students.id
+    name = db.Column(db.String(50))
+    curriculum = db.Column(db.Integer, db.ForeignKey('curriculum.id')) # Foreign Key to Curriculum.id
+    instructor = db.Column(db.Integer, db.ForeignKey('instructor.id')) # Foreign Key to Instructor.id
+    students = db.relationship("Student", backref="cohort") # One to Many: Students.id
 
     def __repr__(self):
-        return f'< Cohort | Name: {self.name} | ID: {self.id} >'
+        return f'< Cohort | Name: {self.curriculum} | ID: {self.id} >'
 
     def set_attributes(self, data):
-        for attribute in ['curriculum', 'instructor']:
+        for attribute in ['curriculum', 'instructor', 'name']:
             if attribute in data:
                 setattr(self, attribute, data[attribute])
 
     def attributes_as_dictionary(self):
         dictionary = {
             'id':self.id,
+            'name':self.name,
             'curriculum':self.curriculum,
             'instructor':self.instructor,
             'students':self.students
@@ -118,15 +119,15 @@ class Cohort(db.Model):
         db.session.commit()
 
 classes = db.Table('classes', 
-    db.Column('topic_id', db.Integer), #Foreign Key Topic.id
-    db.Column('curriculum_id', db.Integer) #Foreign Key Curriculum.id
+    db.Column('topic_id', db.Integer, db.ForeignKey('topic.id')), #Foreign Key Topic.id
+    db.Column('curriculum_id', db.Integer, db.ForeignKey('curriculum.id')) #Foreign Key Curriculum.id
 )
 
 class Curriculum(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     time_to_complete = db.Column(db.Integer) # Time to complete
-    # topics = db.relationship('Topic', secondary=classes, backref=db.backref('curriculums', lazy='dynamic'))
+    topics = db.relationship('Topic', secondary=classes, backref=db.backref('curriculums', lazy='dynamic'))
 
     def __repr__(self):
         return f'< Curriculum | Name: {self.name} | ID: {self.id} >'
